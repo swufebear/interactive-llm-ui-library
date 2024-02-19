@@ -26,4 +26,12 @@ const StorywritingInput = () => {
                 textColor={hoveredPath.length > 0 ? "#0066ff99" : undefined}
             />
             <CellTree
-           
+                cellWidth={96}
+                cellHeight={28}
+                style={{width: "50%", height: "100%"}}
+            />
+        </Container>
+    )
+}
+
+export default StorywritingInput;
