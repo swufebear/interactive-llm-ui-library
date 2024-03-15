@@ -97,4 +97,53 @@ const CellBoard: React.FC<CellBoardProps> = ({
     // initialize board
     React.useEffect(() => {
         var newBoard = initialBoard.map(row => row.map(text => {
-            
+            const newCellId = addCell(text);
+            return newCellId;
+        }));
+        if(initialBoard.length == 0) {
+            const newCellId = addCell("");
+            newBoard = [[newCellId]];
+        }
+        setBoard(newBoard);
+        setActiveCells(new Array(newBoard.length).fill(undefined));
+    }, []);
+
+    const handleActivateCell = (cell: CellProps, rowIndex: number) => {
+        const newActiveCells = [...activeCells];
+        if(cell.isActive) {
+            const parentCellId = cell.parentCellId;
+            const childCellId = activeCells[rowIndex + 1];
+            if(parentCellId && childCellId) {
+                linkCells(childCellId, parentCellId);
+            } else if(childCellId) {
+                unlinkCell(childCellId);
+            }
+            unlinkCell(cell.id);
+            newActiveCells[rowIndex] = undefined;
+        } else {
+            // if a cell is already active in row, deactivate it
+            const activeCellId = activeCells[rowIndex];
+            if(activeCellId) {
+                toggleCell(activeCellId, 'isActive');
+                unlinkCell(activeCellId);
+            }
+            // link cell to parent
+            const parentCellId = activeCells[rowIndex - 1];
+            const childCellId = activeCells[rowIndex + 1];
+            if(parentCellId) {
+                linkCells(cell.id, parentCellId);
+            }
+            if(childCellId) {
+                linkCells(childCellId, cell.id);
+            }
+            newActiveCells[rowIndex] = cell.id;
+        }
+
+        // find last activecell that is not undefined
+        const inputCell = newActiveCells.reduceRight((acc, cur) => {
+            if(acc) return acc;
+            if(cur) return cur;
+        });
+        setEntryCell(inputCell);
+
+        
