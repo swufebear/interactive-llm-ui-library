@@ -146,4 +146,50 @@ const CellBoard: React.FC<CellBoardProps> = ({
         });
         setEntryCell(inputCell);
 
-        
+        // activate or deactivate cell
+        toggleCell(cell.id, 'isActive');  
+        setActiveCells(newActiveCells);      
+    }
+    
+    const addCellToRow = (rowIndex: number) => {
+        const newCellId = addCell("");
+        const newBoard = [...board];
+        if(rowIndex === newBoard.length) {
+            newBoard.push([]);
+        }
+        newBoard[rowIndex].push(newCellId);
+        setBoard(newBoard);
+    }
+
+    return (
+        <CellBoardContainer style={style}>
+            {board.map((row, rowIndex) => (
+                <CellRow key={rowIndex}>
+                    <CellsContainer>
+                        {row.map((cellId, columnIndex) => {
+                            const cell = cells.find(cell => cell.id === cellId);
+                            if (!cell) return null;
+                            return (
+                                <Cell
+                                    key={cellId}
+                                    {...cell}
+                                    onClick={() => handleActivateCell(cell, rowIndex)}
+                                />
+                            );
+                        })}
+                    </CellsContainer>
+                    <CellRowControls>
+                        <AddColumnButton 
+                            onClick={() => addCellToRow(rowIndex)}
+                            disabled={row.length >= maxColumns}
+                        >
+                            +
+                        </AddColumnButton>
+                    </CellRowControls>
+                </CellRow>
+            ))}
+            <CellRow>
+                <AddRowButton 
+                    onClick={() => addCellToRow(board.length)}
+                    disabled={board.length >= maxRows}
+    
