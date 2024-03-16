@@ -192,4 +192,12 @@ const CellBoard: React.FC<CellBoardProps> = ({
                 <AddRowButton 
                     onClick={() => addCellToRow(board.length)}
                     disabled={board.length >= maxRows}
-    
+                >
+                    + New Row
+                </AddRowButton>
+            </CellRow>
+        </CellBoardContainer>
+    )
+};
+
+export default CellBoard;
