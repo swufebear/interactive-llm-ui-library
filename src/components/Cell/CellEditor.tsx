@@ -54,4 +54,53 @@ const formats = [
 const CellEditor: React.FC<CellEditorProps> = ({ 
     cellIds,
     style,
- 
+    textColor
+}) => {
+    const quillRef = React.useRef<any | null>(null);
+    const reactQuillRef = React.useRef<ReactQuill | null>(null);
+
+    const { cells, updateCell, addCell, toggleCell } = React.useContext(ObjectsContext);
+    const [value, setValue] = React.useState<string>("");
+
+    const prevCellIds = React.useRef<string[]>(cellIds);
+    const prevCells = React.useRef<CellProps[]>(cells);
+    
+    const attachQuillRefs = () => {
+        if (typeof reactQuillRef.current?.getEditor !== 'function') return;
+        const quill = reactQuillRef.current.getEditor();
+        if (quill != null) quillRef.current = quill;
+    }
+
+    const getOrderedActiveCells = () => {
+        var newActiveCells: CellProps[] = cellIds.map(cellId => {
+            const cell = cells.find(cell => cell.id == cellId);
+            return cell;
+        }) as CellProps[];
+
+        // reorder newActiveCells from parent to child
+        const newActiveCellsOrdered: CellProps[] = [];
+        var currParent = newActiveCells.find(cell => !cell.parentCellId);
+        while(currParent) {
+            newActiveCellsOrdered.push(currParent);
+            currParent = newActiveCells.find(cell => cell.parentCellId == currParent?.id);
+        }
+
+        return newActiveCellsOrdered;
+    }
+
+    React.useEffect(() => {
+        attachQuillRefs();
+        initializeCells(getOrderedActiveCells());
+    }, []);
+
+    React.useEffect(() => {
+        if(cellIds.length == prevCellIds.current.length && cellIds.every((value, index) => value == prevCellIds.current[index])) return;
+
+        initializeCells(getOrderedActiveCells());
+
+        prevCellIds.current = cellIds;
+    }, [cellIds]);
+
+    React.useEffect(() => {
+        // check if any cell has been selected that was not previously selected
+        c
