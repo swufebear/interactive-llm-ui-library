@@ -146,4 +146,49 @@ const CellEditor: React.FC<CellEditorProps> = ({
                 }
             };
         });
-        quillRef.current.setContents
+        quillRef.current.setContents(contents);
+    }
+
+    const parseSpans = (value: string) => {
+        const spans = value.split("</span>");
+        const cells = spans.map(span => {
+            const cell = span.split("<span")[1];
+            if(!cell) return {};
+            const id = cell.split("id=")[1].split(" ")[0].replace(/"/g, "");
+            const text = cell.split(">")[1];
+            return {id, text};
+        });
+        return cells;
+    }
+
+    const checkChangedCells = (prevValue: string, newValue: string) => {
+        const prevCellText = parseSpans(prevValue) as {id: string, text: string}[];
+        const newCellText = parseSpans(newValue) as {id: string, text: string}[];
+
+        const updatedCells: {id: string, text: string}[] = [];
+        const deletedCells: {id: string, text: string}[] = [];
+
+        prevCellText.forEach(prevCell => {
+            const newCell = newCellText.find(newCell => newCell.id == prevCell.id);
+            if(!newCell) {
+                deletedCells.push(prevCell as {id: string, text: string});
+            } else if(newCell.text != prevCell.text) {
+                updatedCells.push(newCell);
+            }
+        })
+
+        updatedCells.forEach(cell => {
+            updateCell(cell.id, cell.text);
+        });
+        deletedCells.forEach(cell => {
+            updateCell(cell.id, "␡");
+        });
+
+        if(deletedCells.length > 0) {
+            const activeCells = getOrderedActiveCells();
+            const newCells = activeCells.map(cell => {
+                if(deletedCells.find(deletedCell => deletedCell.id == cell.id)) {
+                    return {...cell, text: "␡"};
+                }
+                const updatedCell = updatedCells.find(updatedCell => updatedCell.id == cell.id);
+                if(updatedCell) {
