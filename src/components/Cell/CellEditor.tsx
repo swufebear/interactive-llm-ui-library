@@ -103,4 +103,47 @@ const CellEditor: React.FC<CellEditorProps> = ({
 
     React.useEffect(() => {
         // check if any cell has been selected that was not previously selected
-        c
+        const newSelectedCell = cells.find(cell => cell.isSelected);
+        const prevSelectedCellId = prevCells.current.find(cell => cell.isSelected)?.id;
+        const prevSelectedCell = cells.find(cell => cell.id == prevSelectedCellId);
+
+        if(prevSelectedCell === newSelectedCell) return;
+
+        var currIdx = 0;
+        var prevIdx = -1;
+        var newIdx = -1;
+        const activeCells = getOrderedActiveCells();
+        for(var i = 0; i < activeCells.length; i++) {
+            if(activeCells[i].id == prevSelectedCellId) {
+                prevIdx = currIdx;
+            } else if(activeCells[i].id == newSelectedCell?.id) {
+                newIdx = currIdx;
+            }
+            currIdx += activeCells[i].text.length;
+        }
+
+        if(prevSelectedCell) {
+            // get selection in quill
+            const length = prevSelectedCell.text.length;
+            quillRef.current.formatText(prevIdx, length, 'background', false);
+        }
+        if(newSelectedCell) {
+            // get selection in quill
+            const length = newSelectedCell.text.length;
+            quillRef.current.formatText(newIdx, length, 'background',  "#0088ff33");
+        }
+        
+        prevCells.current = cells;
+    }, [cells]);
+
+    const initializeCells = (cells: (CellProps | undefined)[]) => {
+        const contents = cells.map((cell, index) => {
+            if(!cell) return;
+            return {
+                insert: cell.text, 
+                attributes: {
+                    cell: { id: cell.id, style: index % 2 == 0 ? "color:#333" : "color:#666" }
+                }
+            };
+        });
+        quillRef.current.setContents
