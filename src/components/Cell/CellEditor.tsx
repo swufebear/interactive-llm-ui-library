@@ -192,3 +192,49 @@ const CellEditor: React.FC<CellEditorProps> = ({
                 }
                 const updatedCell = updatedCells.find(updatedCell => updatedCell.id == cell.id);
                 if(updatedCell) {
+                    return {...cell, text: updatedCell.text};
+                }
+                return cell;
+            });
+            initializeCells(newCells);
+        } else {
+            setValue(newValue);
+        }
+    }
+
+    return (
+        <Container 
+            style={style}
+            textColor={textColor}
+            onMouseDown={(e) => {
+                e.stopPropagation();
+            }}
+        >
+            <link rel="stylesheet" href="//cdn.quilljs.com/1.3.6/quill.snow.css"></link>
+            <ReactQuill
+                ref={reactQuillRef}
+                theme={"snow"}
+                value={value}
+                onChange={(newValue: string, delta: DeltaStatic, source: Sources) => {
+                    if(source != "user") {
+                        setValue(newValue);
+                        return;
+                    }
+                    checkChangedCells(value, newValue);
+                }}
+                onChangeSelection={(range: any, source: Sources, editor: any) => {
+                    if(!range || range.length > 0) return;
+                    if(range.index == 0) {
+                        toggleCell(cells[0].id, 'isSelected');
+                        return;
+                    }
+                    const [leaf] = quillRef.current.getLeaf(range.index);
+                    if(!leaf) return;
+                    const cellId = leaf.parent.domNode.getAttribute("id");
+                    if(!cellId) return;
+                    const cell = cells.find(cell => cell.id == cellId);
+                    if(!cell || cell.isSelected) return;
+                    toggleCell(cellId, 'isSelected');
+                }}
+                onKeyDown={(e: any) => {
+                    if(e.key == "Enter" && (e.metaKey |
