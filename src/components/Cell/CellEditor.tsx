@@ -237,4 +237,25 @@ const CellEditor: React.FC<CellEditorProps> = ({
                     toggleCell(cellId, 'isSelected');
                 }}
                 onKeyDown={(e: any) => {
-                    if(e.key == "Enter" && (e.metaKey |
+                    if(e.key == "Enter" && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        const activeCells = getOrderedActiveCells();
+                        const parentId = activeCells[activeCells.length-1].id;
+                        addCell(" ", {parentCellId: parentId, isActive: true});
+
+                        setTimeout(() => {
+                            const length = quillRef.current.getLength();
+                            quillRef.current.setSelection(length, 0);
+                        }, 10);
+                    } else if(e.key == "Backspace" && (e.metaKey || e.ctrlKey)) {
+                        e.stopPropagation();
+                    }
+                }}
+                modules={{toolbar: false}}
+                formats={formats}
+            />
+        </Container>
+    )
+}
+
+export default CellEditor;
