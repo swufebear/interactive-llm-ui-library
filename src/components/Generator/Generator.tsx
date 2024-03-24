@@ -1,0 +1,37 @@
+import React from "react";
+import styled from "styled-components";
+import { GeneratorProps, ParameterProps } from "./Generator.types";
+import { ObjectsContext } from "../../context/ObjectsContextProvider";
+
+const ParameterRow = styled.div<{ size: string }>`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: ${(props) => props.size === "small" ? "4px" : (props.size === "medium" ? "6px" : "8px")};
+    margin-top: ${(props) => props.size === "small" ? "4px" : (props.size === "medium" ? "6px" : "8px")};
+`;
+
+const ParameterBlock = styled.div<{ size: string }>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.50);
+    border-radius: ${(props) => props.size === "small" ? "2px" : (props.size == "medium" ? "4px" : "6px")};
+    height: ${(props) => props.size === "small" ? "32px" : (props.size == "medium" ? "48px" : "64px")};
+    width: ${(props) => props.size === "small" ? "32px" : (props.size == "medium" ? "48px" : "64px")};
+    padding: ${(props) => props.size === "small" ? "0 2px 2px 2px" : (props.size == "medium" ? "0 3px 3px 3px" : "0 4px 4px 4px")};
+    cursor: pointer;
+    &:hover {
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+    }
+`;
+
+const ParameterName = styled.div<{ size: string }>`
+    font-size: ${(props) => props.size === "small" ? "8px" : (props.size === "medium" ? "12px" : "16px")};
+    color: #555555;
+    margin-bottom: 2px;
+`;
+
+const ParameterValue = styled.div<{ siz

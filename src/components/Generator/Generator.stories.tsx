@@ -147,4 +147,10 @@ Medium.args = {
             value: 3,
             type: "discrete",
             allowedValues: [1, 20],
-            defaultVal
+            defaultValue: 0
+        }
+    ],
+    color: "#0088ff",
+    size: "medium",
+    isGenerating: false
+};
