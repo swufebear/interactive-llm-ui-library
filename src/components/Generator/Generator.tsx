@@ -34,4 +34,51 @@ const ParameterName = styled.div<{ size: string }>`
     margin-bottom: 2px;
 `;
 
-const ParameterValue = styled.div<{ siz
+const ParameterValue = styled.div<{ size: string }>`
+    font-size: ${(props) => props.size === "small" ? "16px" : (props.size === "medium" ? "20px" : "24px")};
+    width: 90%;
+    text-align: center;
+    color: #333333;
+    background-color: rgba(255, 255, 255, 0.75);
+    flex: 1;
+    border-radius: ${(props) => props.size === "small" ? "2px" : (props.size == "medium" ? "3px" : "4px")};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Parameter: React.FC<ParameterProps & { size: string; onClick: (e: any) => void }> = ({
+    id,
+    name,
+    nickname,
+    type,
+    value,
+    allowedValues,
+    valueNicknames,
+    defaultValue,
+    size,
+    onClick
+}) => {
+    if(type === "nominal") {
+        value = valueNicknames ? valueNicknames[value as string] : value;
+    }
+
+    return (
+        <ParameterBlock size={size} onClick={onClick}>
+            <ParameterName size={size}>
+                {nickname ? nickname : name.toLowerCase()}
+            </ParameterName>
+            <ParameterValue size={size}>
+                {value}
+            </ParameterValue>
+        </ParameterBlock>
+    )
+}
+
+const ControllerContainer = styled.div<{ size: string, row: number, column: number, color: string }>`
+    position: absolute;
+    top: ${(props) => props.size === "small" ? 12 + props.row*(34 + 4) : (props.size === "medium" ? 17 + props.row*(51 + 6) : 22 + props.row*(68 + 8))}px;
+    left: ${(props) => props.size === "small" ? 4 + props.column*(36 + 4) : (props.size == "medium" ? 6 + props.column*(54 + 6) : 8 + props.column*(72 + 8))}px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: ${(props) => props.size === "small" ? "2px" : (props.size == "medium" ? "4px" : "6px")};
+    height: ${(props) => props.size === "smal
