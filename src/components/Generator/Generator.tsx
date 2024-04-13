@@ -122,4 +122,47 @@ const ControllerInner = styled.div<{size: string, filled?: number}>`
         -webkit-appearance: none;
         appearance: none;
         width: ${(props) => props.size === "small" ? "8px" : (props.size === "medium" ? "12px" : "16px")};
-        height: ${(props) => props.size === "small
+        height: ${(props) => props.size === "small" ? "8px" : (props.size === "medium" ? "12px" : "16px")};
+        border-radius: 50%;
+        background-color: #0066ffdd;
+        cursor: pointer;
+        transition: 0.5s;
+        margin-top: ${(props) => props.size === "small" ? "-2px" : (props.size === "medium" ? "-3px" : "-4px")};
+        &:hover {
+            background-color: #0066ff;
+        }
+    }
+    & > input[type=range]::-webkit-slider-runnable-track {
+        -webkit-appearance: none;
+        height: ${(props) => props.size === "small" ? "4px" : (props.size === "medium" ? "6px" : "8px")};
+        border-radius: 20px;
+        width: 100%;
+        background: #dddddd;
+        background-image: linear-gradient(#0066ffaa, #0066ffaa);
+        background-size: ${(props) => props.filled}% 100%;
+        background-repeat: no-repeat;
+    }
+    & > select {
+        width: 100%;
+        font-size: ${(props) => props.size === "small" ? "10px" : (props.size == "medium" ? "14px" : "18px")};
+        border: solid 1px #cccccc;
+        border-radius: 4px;
+    }
+`;
+
+const ParameterController: React.FC<{ parameter: ParameterProps, size: string, row: number, column: number, color: string, changeHandler: (value: string | number) => void }> = ({
+    parameter,
+    size,
+    row,
+    column,
+    color,
+    changeHandler
+}) => {
+    const [currInput, setCurrInput] = React.useState<string>(parameter.value !== undefined && typeof parameter.value !== "string" ? parameter.value.toString() : "");
+    
+    React.useEffect(() => {
+        setCurrInput(parameter.value !== undefined && typeof parameter.value !== "string" ? parameter.value.toString() : "");
+    }, [parameter.value]);
+
+    const handleChange = () => {
+        var inputF
