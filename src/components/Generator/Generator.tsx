@@ -165,4 +165,45 @@ const ParameterController: React.FC<{ parameter: ParameterProps, size: string, r
     }, [parameter.value]);
 
     const handleChange = () => {
-        var inputF
+        var inputFloat = parseFloat(currInput);
+        if(isNaN(inputFloat)) {
+            setCurrInput(parameter.value && typeof parameter.value !== "string" ? parameter.value.toString() : "");
+            return;
+        }
+
+        var allowedValues = parameter.allowedValues as number[];
+        if(inputFloat > allowedValues[1]) {
+            inputFloat = allowedValues[1];
+        } else if(inputFloat < allowedValues[0]) {
+            inputFloat = allowedValues[0];
+        }
+
+        if(parameter.type === "discrete") {
+            inputFloat = Math.round(inputFloat);
+        }
+
+        changeHandler(inputFloat);
+    }
+
+    var filled = 0;
+    if(parameter.type !== "nominal") {
+        filled = parameter.value as number / ((parameter.allowedValues[1] as number) - (parameter.allowedValues[0] as number)) * 100;
+    }
+
+    return (
+        <ControllerContainer size={size} row={row} column={column} color={color}>
+            <ControllerInner size={size} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
+                <div>{parameter.name.slice(0, 12)}</div>
+                {parameter.type !== "nominal" ? 
+                    <input 
+                        value={currInput} 
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrInput(e.target.value)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key == "Enter" && handleChange()}
+                        onBlur={handleChange}
+                        type="text"
+                    /> :
+                    ""
+                }
+            </ControllerInner>
+            <ControllerInner size={size} filled={filled} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
+                {parameter.type !== "nomin
