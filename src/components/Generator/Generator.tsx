@@ -206,4 +206,45 @@ const ParameterController: React.FC<{ parameter: ParameterProps, size: string, r
                 }
             </ControllerInner>
             <ControllerInner size={size} filled={filled} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
-                {parameter.type !== "nomin
+                {parameter.type !== "nominal" ? 
+                    <input 
+                        type="range" 
+                        min={parameter.allowedValues[0]}
+                        max={parameter.allowedValues[1]}
+                        value={parameter.value}
+                        step={parameter.type == "discrete" ? 1 : 0.05}
+                        onChange={(e: any) => changeHandler(parseFloat(e.target.value))}
+                    /> :
+                    <select defaultValue={parameter.value} onChange={(e: any) => changeHandler(e.target.value)}>
+                        {parameter.allowedValues.map((value, index) => {
+                            return (
+                                <option key={index} value={value}>{value}</option>
+                            )
+                        })}
+                    </select>
+                }
+            </ControllerInner>
+        </ControllerContainer>
+    )
+};
+
+const GeneratorContainer = styled.div<{ color: string, size: string }>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: ${(props) => props.color};
+    border-radius: ${(props) => props.size === "small" ? "4px" : (props.size == "medium" ? "6px" : "8px")};
+    padding: ${(props) => props.size === "small" ? "2px 4px 4px 4px" : (props.size == "medium" ? "3px 6px 6px 6px" : "4px 8px 8px 8px")};
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    cursor: pointer;
+`;
+
+const GeneratorHeader = styled.div<{ size: string }>`
+    font-size: ${(props) => props.size === "small" ? "8px" : (props.size === "medium" ? "12px" : "16px")};
+    line-height: 1;
+    color: white;
+    user-select: n
