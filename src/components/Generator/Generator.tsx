@@ -290,4 +290,60 @@ const Generator: React.FC<GeneratorProps> = ({
         const handleClickOutside = (event: any) => {
             if (event.target.id !== id) setSelectedParameter("");
         }
-        document.addEventListener("mousedown", handl
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, []);
+
+    const handleClick = (e: any) => {
+        if(e.detail === 1) {
+            clickTimer.current = window.setTimeout(() => {
+                onGenerate(id);
+                clickTimer.current = null;
+            }, 200);
+        } else if(e.detail === 2) {
+            if(clickTimer.current) {
+                clearTimeout(clickTimer.current);
+                clickTimer.current = null;
+            }
+            toggleGenerator(id, 'isSelected');
+        }
+    }
+
+    const handleMouseEnter = (e: any) => {
+        if(onMouseEnter) onMouseEnter(e);
+    }
+    const handleMouseLeave = (e: any) => {
+        if(onMouseLeave) onMouseLeave(e);
+    }
+
+    const parameterRows: ParameterProps[][] = [];
+    let currentRow: ParameterProps[] = [];
+    parameters.forEach((parameter, index) => {
+        if (index % (numColumns ? numColumns : 2) === 0 && index !== 0) {
+            parameterRows.push(currentRow);
+            currentRow = [];
+        }
+        currentRow.push(parameter);
+    });
+    parameterRows.push(currentRow);
+
+    const selectedParameterIdx = parameters.findIndex((parameter) => parameter.id === selectedParameter);
+
+    return (
+        <GeneratorContainer 
+            id={id} 
+            color={color} 
+            size={size ? size : "medium"}
+            onClick={handleClick}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            data-testid={id}
+        >
+            <GeneratorHeader size={size ? size : "medium"}>Generate</GeneratorHeader>
+            {parameterRows.map((row, index) => {
+                return (
+                    <ParameterRow 
+             
