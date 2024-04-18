@@ -247,4 +247,47 @@ const GeneratorHeader = styled.div<{ size: string }>`
     font-size: ${(props) => props.size === "small" ? "8px" : (props.size === "medium" ? "12px" : "16px")};
     line-height: 1;
     color: white;
-    user-select: n
+    user-select: none;
+`;
+
+const AnimationContainer = styled.svg<{ size: string }>`
+    position: absolute;
+    top: calc(50% - ${(props) => props.size === "small" ? "16px" : (props.size == "medium" ? "24px" : "32px")});
+    left: calc(50% - ${(props) => props.size === "small" ? "16px" : (props.size == "medium" ? "24px" : "32px")});
+    height: ${(props) => props.size === "small" ? "32px" : (props.size == "medium" ? "48px" : "64px")};
+    width: ${(props) => props.size === "small" ? "32px" : (props.size == "medium" ? "48px" : "64px")};
+    z-index: 2;
+`;
+
+const Outline = styled.div<{ size: string }>`
+    position: absolute;
+    top: -${(props) => props.size !== "large" ? 4 : 6}px;
+    left: -${(props) => props.size !== "large" ? 4 : 6}px;
+    height: calc(100% + ${(props) => props.size !== "large" ? 8 : 12}px);
+    width: calc(100% + ${(props) => props.size !== "large" ? 8 : 12}px);
+    border: solid rgb(0, 194, 255) ${(props) => props.size !== "large" ? 2 : 3}px;
+    border-radius: ${(props) => props.size === "small" ? 6 : (props.size == "medium" ? 8 : 10)}px;
+    box-sizing: border-box;
+    box-shadow: 0 0 2px 2px rgba(0, 194, 255, 0.3);
+`;
+
+const Generator: React.FC<GeneratorProps> = ({ 
+    id,
+    parameters,
+    color,
+    size,
+    numColumns,
+    isGenerating,
+    isSelected,
+    onMouseEnter,
+    onMouseLeave
+}) => {
+    const { updateGenerator, toggleGenerator, onGenerate } = React.useContext(ObjectsContext);
+    const [selectedParameter, setSelectedParameter] = React.useState<string>("");
+    const clickTimer = React.useRef<number | null>(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (event.target.id !== id) setSelectedParameter("");
+        }
+        document.addEventListener("mousedown", handl
