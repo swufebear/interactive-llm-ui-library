@@ -346,4 +346,40 @@ const Generator: React.FC<GeneratorProps> = ({
             {parameterRows.map((row, index) => {
                 return (
                     <ParameterRow 
-             
+                        key={index} 
+                        size={size ? size : "medium"}
+                        style={index == 0 ? { marginTop: "2px" } : {}}
+                    >
+                        {row.map((parameter, index) => {
+                            return (
+                                <Parameter
+                                    key={index}
+                                    {...parameter}
+                                    size={size ? size : "medium"}
+                                    onClick={(e: any) => {
+                                        e.stopPropagation();
+                                        setSelectedParameter(parameter.id);
+                                    }}
+                                />
+                            )
+                        })}
+                    </ParameterRow>
+                )
+            })}
+            {selectedParameterIdx != -1 && (
+                <ParameterController
+                    parameter={parameters[selectedParameterIdx]}
+                    size={size ? size : "medium"}
+                    row={Math.floor(selectedParameterIdx / (numColumns ? numColumns : 2))}
+                    column={selectedParameterIdx % (numColumns ? numColumns : 2)}
+                    color={color}
+                    changeHandler={(value: string | number) => {
+                        const newParameters = [...parameters];
+                        newParameters[selectedParameterIdx].value = value;
+                        updateGenerator(id, newParameters);
+                    }}
+                />
+            )}
+            {isGenerating && (
+                <AnimationContainer size={size ? size : "medium"}>
+                    <g transform={`scale(${size === "smal
