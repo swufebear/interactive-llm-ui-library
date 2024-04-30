@@ -11,4 +11,10 @@ export interface LensProps {
 
 export interface GenerationProps {
     id: string;
-  
+    generatorId: string;
+    lensId: string | null;
+    inputText: string;
+    content: string;
+    parameters: ParameterProps[];
+    metadata: any;
+}
