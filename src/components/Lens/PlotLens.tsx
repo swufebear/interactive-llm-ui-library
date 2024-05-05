@@ -231,4 +231,31 @@ const PlotLens: React.FC<PlotLensProps> = ({
             <PlotContainer>
                 <SelectorContainer>
                     <div>X</div>
-                    <select value={dimensions.x ? dimensions.x : ""}
+                    <select value={dimensions.x ? dimensions.x : ""} onChange={(e) => setDimensions({...dimensions, x: e.target.value})}>
+                        {allDimensions.map((dimension) => (
+                            <option key={dimension} value={dimension}>{dimension}</option>
+                        ))}
+                    </select>
+                    <div>Y</div>
+                    <select value={dimensions.y ? dimensions.y : ""} onChange={(e) => setDimensions({...dimensions, y: e.target.value})}>
+                        {allDimensions.map((dimension) => (
+                            <option key={dimension} value={dimension}>{dimension}</option>
+                        ))}
+                    </select>
+                </SelectorContainer>
+                <div style={{display: "flex", flexDirection: "row", gap: "8px", flex: 1, position: 'relative'}}>
+                    <YAxis><span>{dimensions.y ? dimensions.y : "y-axis"}</span></YAxis>
+                    {loadingCount > 0 && (
+                        <AnimationContainer >
+                            <g transform={`scale(0.84)`}>
+                                <path
+                                    fill="#0088ff99"
+                                    d="M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z">
+                                    <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.5s" repeatCount="indefinite" />
+                                </path>
+                            </g>
+                        </AnimationContainer>
+                    )}
+                    <Plot>
+                        {generations.length == 0 && (
+                            <div style={{display: "flex",
