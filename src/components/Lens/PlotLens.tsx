@@ -258,4 +258,34 @@ const PlotLens: React.FC<PlotLensProps> = ({
                     )}
                     <Plot>
                         {generations.length == 0 && (
-                            <div style={{display: "flex",
+                            <div style={{display: "flex", paddingTop: "5%", justifyContent: "center", alignItems: "center", color: "#ccc"}}>
+                                No generations yet...
+                            </div>
+                        )}
+                        {generations.map((generation: GenerationProps, index: number) => {
+                            const { metadata } = generation;
+                            if(!metadata) return null;
+                            const { ratings } = metadata;
+                            if(!ratings) return null;
+
+                            // normalize x and y
+                            const noise = (index % 15) / 5;
+                            const normalizedX = (dimensions.x == null) ? 8 : ratings[dimensions.x] * 84 + 8 + noise;
+                            const normalizedY = (dimensions.y == null) ? 8 : ratings[dimensions.y] * 84 + 8 + noise;
+
+                            return (
+                                <Dot 
+                                    key={generation.id}
+                                    x={normalizedX} y={normalizedY}
+                                    onClick={() => setSelectedId(generation.id)}
+                                    onMouseOver={() => {
+                                        setHoveredId(generation.id);
+                                        setViewed([...viewed, generation.id]);
+                                    }}
+                                    onMouseOut={() => setHoveredId(null)}
+                                    selected={selectedId === generation.id}
+                                    viewed={viewed.includes(generation.id)}
+                                />
+                            )
+                        })}
+                    </Pl
