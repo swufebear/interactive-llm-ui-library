@@ -190,4 +190,45 @@ const PlotLens: React.FC<PlotLensProps> = ({
             return !ratings;
         });
 
-        if(unpr
+        if(unprocessedGenerations.length === 0 && (dimensions.x == null || dimensions.y == null)) {
+            const ratings = newGenerations[0].metadata.ratings;
+            const ratingDimensions = Object.keys(ratings);
+            setAllDimensions(ratingDimensions);
+            setDimensions({x: ratingDimensions[0], y: ratingDimensions[1]});
+            return;
+        }
+        
+        setLoadingCount((prev) => prev + 1);
+        getRatings(unprocessedGenerations).then((ratings: {[key: string]: number}[]) => {
+            if(ratings.length === 0) {
+                setLoadingCount((prev) => prev - 1);
+                return;
+            }
+
+            const ratingDimensions = Object.keys(ratings[0]);
+            
+            updateGenerationsData(
+                unprocessedGenerations.map((generation) => generation.id),
+                ratings.map((ratings) => ({ratings}))
+            );
+
+            if(dimensions.x == null || dimensions.y == null) {
+                setAllDimensions(ratingDimensions);
+                setDimensions({x: ratingDimensions[0], y: ratingDimensions[1]});
+            }
+
+            setLoadingCount((prev) => prev - 1);
+        });
+
+        prevGenerations.current = generations;
+    }, [generations]);
+
+    const hoveredGeneration = generations.find((generation: GenerationProps) => generation.id === hoveredId);
+    const selectedGeneration = generations.find((generation: GenerationProps) => generation.id === selectedId);
+
+    return (
+        <PlotLensContainer>
+            <PlotContainer>
+                <SelectorContainer>
+                    <div>X</div>
+                    <select value={dimensions.x ? dimensions.x : ""}
