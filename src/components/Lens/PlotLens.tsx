@@ -141,4 +141,53 @@ const AnimationContainer = styled.svg`
 `;
 
 const parametersToHtml = (properties: ParameterProps[]) => {
-    return properties.map(
+    return properties.map((property: ParameterProps) => {
+        const { name, value } = property;
+        return (
+            <div key={name}>
+                {name}: <span style={{fontWeight: "bold"}}>{value}</span>
+            </div>
+        )
+    })
+}
+
+interface PlotLensProps {
+    generations: GenerationProps[];
+    onGenerationClick?: (generationText: string) => void;
+    getRatings: (generations: GenerationProps[]) => Promise<{[rating: string]: number}[]>;
+}
+
+const PlotLens: React.FC<PlotLensProps> = ({
+    generations,
+    onGenerationClick,
+    getRatings
+}) => {
+    const { hoveredId, setHoveredId, updateGenerationsData } = React.useContext(ObjectsContext);
+
+    const [loadingCount, setLoadingCount] = React.useState(0);
+
+    const [selectedId, setSelectedId] = React.useState<string | null>(null);
+    const [viewed, setViewed] = React.useState<string[]>([]);
+
+    const [allDimensions, setAllDimensions] = React.useState<string[]>([]);
+    const [dimensions, setDimensions] = React.useState<{x: string | null, y: string | null}>({x: null, y: null});
+
+    const prevGenerations = React.useRef<GenerationProps[]>([]);
+
+    React.useEffect(() => {
+        if(generations.length === prevGenerations.current.length) return;
+
+        const newGenerations = generations.filter((generation: GenerationProps) => {
+            return !prevGenerations.current.find((prevGeneration: GenerationProps) => prevGeneration.id === generation.id);
+        });
+
+        if(newGenerations.length === 0) return;
+
+        const unprocessedGenerations = newGenerations.filter((generation: GenerationProps) => {
+            const { metadata } = generation;
+            if(!metadata) return true;
+            const { ratings } = metadata;
+            return !ratings;
+        });
+
+        if(unpr
