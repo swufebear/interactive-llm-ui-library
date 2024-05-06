@@ -317,4 +317,15 @@ const PlotLens: React.FC<PlotLensProps> = ({
                 >
                     <div><b>Output</b></div>
                     <InfoContent style={{color: hoveredGeneration ? "#0066ff99" : (selectedGeneration ? "#555" : "#999")}}>
-                        {hoveredGe
+                        {hoveredGeneration ?
+                            hoveredGeneration.content :
+                            (selectedGeneration ? selectedGeneration.content : "Hover over a generation")
+                        }
+                    </InfoContent>
+                </InfoSection>
+            </InfoContainer>
+        </PlotLensContainer>
+    )
+}
+
+export default PlotLens;
