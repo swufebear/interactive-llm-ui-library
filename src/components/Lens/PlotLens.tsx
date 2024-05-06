@@ -288,4 +288,33 @@ const PlotLens: React.FC<PlotLensProps> = ({
                                 />
                             )
                         })}
-                    </Pl
+                    </Plot>
+                </div>
+                <XAxis>{dimensions.x ? dimensions.x : "x-axis"}</XAxis>
+            </PlotContainer>
+            <InfoContainer>
+                <InfoSection style={{flex: 1}}>
+                    <div><b>Input</b></div>
+                    <InfoContent style={{color: hoveredGeneration ? "#0066ff99" : (selectedGeneration ? "#555" : "#999")}}>
+                        {hoveredGeneration ? 
+                            hoveredGeneration.inputText : 
+                            (selectedGeneration ? selectedGeneration.inputText : "Hover over a generation")
+                        }
+                    </InfoContent>
+                </InfoSection>
+                <InfoSection style={{flex: 1}}>
+                    <div><b>Parameters</b></div>
+                    <InfoContent style={{color: hoveredGeneration ? "#0066ff99" : (selectedGeneration ? "#555" : "#999")}}>
+                        {hoveredGeneration ? 
+                            parametersToHtml(hoveredGeneration.parameters) : 
+                            (selectedGeneration ? parametersToHtml(selectedGeneration.parameters) : "Hover over a generation")
+                        }
+                    </InfoContent>
+                </InfoSection>
+                <InfoSection 
+                    style={{flex: 1, border: "solid 1px #0066ff", cursor: "pointer"}}
+                    onClick={() => selectedGeneration && onGenerationClick && onGenerationClick(selectedGeneration.content)}
+                >
+                    <div><b>Output</b></div>
+                    <InfoContent style={{color: hoveredGeneration ? "#0066ff99" : (selectedGeneration ? "#555" : "#999")}}>
+                        {hoveredGe
