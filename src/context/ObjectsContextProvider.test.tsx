@@ -63,4 +63,55 @@ describe("ObjectsContextProvider", () => {
                         value: "gpt-3.5-turbo",
                         type: "nominal",
                         allowedValues: ["gpt-3.5-turbo", "gpt-4", "text-davinci-003"],
-                        valueNicknames: {"gpt-
+                        valueNicknames: {"gpt-3.5-turbo": "3.5", "gpt-4": "4", "text-davinci-003": "D3"},
+                        defaultValue: "gpt-3.5-turbo"
+                    },
+                    {
+                        id: "temperature",
+                        name: "Temperature",
+                        nickname: "temp",
+                        value: 0.7,
+                        type: "continuous",
+                        allowedValues: [0.0, 2.0],
+                        defaultValue: 1.0
+                    },
+                    {
+                        id: "presence_penalty",
+                        name: "Presence Penalty",
+                        nickname: "presence",
+                        value: 0.0,
+                        type: "continuous",
+                        allowedValues: [0.0, 1.0],
+                        defaultValue: 0.0
+                    },
+                    {
+                        id: "top_k",
+                        name: "Top-K",
+                        nickname: "top",
+                        value: 3,
+                        type: "discrete",
+                        allowedValues: [1, 20],
+                        defaultValue: 0
+                    }
+                ],
+                color: "#0088ff",
+                size: "large",
+                isGenerating: false
+            }
+        ],
+        lenses: [
+            {
+                id: "Lens-id",
+                type: "list"
+            }
+        ]
+    }
+
+    test("renders ObjectsContextProvider component with generators", () => {
+        render(
+            <ObjectsContextProvider {...mockContextProvider}>
+                <MockChild/>
+            </ObjectsContextProvider>
+        );
+        expect(screen.getByText("Generate")).toBeInTheDocument();
+    
