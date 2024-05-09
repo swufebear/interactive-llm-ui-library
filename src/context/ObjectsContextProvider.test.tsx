@@ -114,4 +114,5 @@ describe("ObjectsContextProvider", () => {
             </ObjectsContextProvider>
         );
         expect(screen.getByText("Generate")).toBeInTheDocument();
-    
+    });
+});
